@@ -1,35 +1,92 @@
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Octicons from '@expo/vector-icons/Octicons';
 import { Tabs } from 'expo-router';
-import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+export default function RootLayout() {
+    return (
+        <Tabs
+            screenOptions={{
+                headerShown: false,
+                tabBarShowLabel: false,
+                tabBarInactiveTintColor: '#b5c5d6',
+                tabBarActiveTintColor: '#007AFF',
+            }}
+        >
+            <Tabs.Screen
+                name="index"
+                options={{
+                    tabBarIcon: ({ color, focused }) =>
+                        focused ? (
+                            <Octicons
+                                name="home-fill"
+                                size={26}
+                                color={color}
+                            />
+                        ) : (
+                            <Octicons name="home" size={26} color={color} />
+                        ),
+                }}
+            />
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+            <Tabs.Screen
+                name="grades"
+                options={{
+                    tabBarIcon: ({ color, focused }) =>
+                        focused ? (
+                            <MaterialCommunityIcons
+                                name="book"
+                                size={28}
+                                color={color}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons
+                                name="book-outline"
+                                size={28}
+                                color={color}
+                            />
+                        ),
+                }}
+            />
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+            <Tabs.Screen
+                name="attendance"
+                options={{
+                    tabBarIcon: ({ color, focused }) =>
+                        focused ? (
+                            <MaterialCommunityIcons
+                                name="calendar-check"
+                                size={28}
+                                color={color}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons
+                                name="calendar-check-outline"
+                                size={28}
+                                color={color}
+                            />
+                        ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="messages"
+                options={{
+                    tabBarIcon: ({ color, focused }) =>
+                        focused ? (
+                            <MaterialCommunityIcons
+                                name="message"
+                                size={28}
+                                color={color}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons
+                                name="message-outline"
+                                size={28}
+                                color={color}
+                            />
+                        ),
+                }}
+            />
+        </Tabs>
+    );
 }
