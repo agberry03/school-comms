@@ -51,12 +51,15 @@ export default function Messages() {
         loadConversations();
     }, [user?.$id]);
 
-    const initConversation = async (targetUserId: string) => {
+    const initConversation = async (targetUserIds: string[]) => {
         try {
-            // Check if a conversation already exists between the two users
-            const existingConversation = conversations.find((conv) =>
-                conv.participantIds.includes(targetUserId),
-            );
+            const allUserIds = [user?.$id!, ...targetUserIds];
+            // Check if a conversation already exists between the users
+            const existingConversation = conversations.find((conv) => {
+                const a = [...conv.participantIds].sort();
+                const b = [...allUserIds].sort();
+                return a.length === b.length && a.every((id, i) => id === b[i]);
+            });
             if (existingConversation) {
                 return existingConversation.$id; // Return existing conversation ID
             }
@@ -66,8 +69,8 @@ export default function Messages() {
                 process.env.EXPO_PUBLIC_APPWRITE_CONVERSATIONS_COLLECTION_ID!,
                 ID.unique(),
                 {
-                    participants: [user?.$id!, targetUserId],
-                    participantIds: [user?.$id!, targetUserId],
+                    participants: allUserIds,
+                    participantIds: allUserIds,
                 },
                 undefined, // permissions can be set here if needed
             );
@@ -78,8 +81,8 @@ export default function Messages() {
         }
     };
 
-    const handlePress = async (targetUserId: string) => {
-        const convoId = await initConversation(targetUserId);
+    const handlePress = async (targetUserIds: string[]) => {
+        const convoId = await initConversation(targetUserIds);
         router.push(`/Messages/${convoId}`);
     };
 
@@ -118,7 +121,7 @@ export default function Messages() {
                         filteredUsers.map((u) => (
                             <TouchableOpacity
                                 key={u.$id}
-                                onPress={() => handlePress(u.$id)}
+                                onPress={() => handlePress([u.$id!])}
                             >
                                 <Text style={AppStyles.textButton}>
                                     {u.email}

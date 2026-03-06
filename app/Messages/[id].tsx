@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AppStyles from '../Styles/AppStyles';
 
 export default function MessageDetails() {
-    // The route param is the conversation ID, but we can use it to find the target user ID by looking at the conversation's participants and excluding the current user ID
+    // The route param is the conversation ID, but we can use it to find the target user ID(s) by looking at the conversation's participants and excluding the current user ID
     const { id: convoId } = useLocalSearchParams<{ id: string }>();
     const { user } = useAuth();
     const [messages, setMessages] = React.useState<any[]>([]);
@@ -116,7 +116,9 @@ export default function MessageDetails() {
                             </Text>
                         ))
                     ) : (
-                        <Text>No messages.</Text>
+                        <Text style={[AppStyles.text, { padding: 10, textAlign: 'center' }]}>
+                            No messages.
+                        </Text>
                     )}
                 </ScrollView>
                 <View
@@ -136,7 +138,7 @@ export default function MessageDetails() {
                             onChangeText={setMessageContent}
                             onFocus={() => {
                                 setIsInputFocused(true);
-                                scrollViewRef.current?.scrollToEnd(); // Not working properly yet
+                                scrollViewRef.current?.scrollToEnd();
                             }}
                             onBlur={() => setIsInputFocused(false)}
                             theme={{
