@@ -18,7 +18,6 @@ export default function Messages() {
     const { user } = useAuth();
     const [otherUsers, setOtherUsers] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [conversations, setConversations] = useState<any[]>([]); // Find all conversations for the current user
 
     const filteredUsers = otherUsers?.filter((item) =>
         item.email.toLowerCase().startsWith(searchTerm.toLowerCase()),
@@ -33,29 +32,16 @@ export default function Messages() {
         loadUsers();
     }, [user?.$id]);
 
-    useEffect(() => {
-        if (!user?.$id) return;
-        const loadConversations = async () => {
-            try {
-                const response = await databases.listDocuments(
-                    process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
-                    process.env
-                        .EXPO_PUBLIC_APPWRITE_CONVERSATIONS_COLLECTION_ID!,
-                    [Query.equal('participantIds', user?.$id!)],
-                );
-                setConversations(response.documents);
-            } catch (error) {
-                console.error('Error loading conversations:', error);
-            }
-        };
-        loadConversations();
-    }, [user?.$id]);
-
     const initConversation = async (targetUserIds: string[]) => {
         try {
-            const allUserIds = [user?.$id!, ...targetUserIds];
+            const conversations = await databases.listDocuments(
+                process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
+                process.env.EXPO_PUBLIC_APPWRITE_CONVERSATIONS_COLLECTION_ID!,
+                [Query.equal('participantIds', user?.$id!)],
+            );
+            const allUserIds = [...new Set([user?.$id!, ...targetUserIds])];
             // Check if a conversation already exists between the users
-            const existingConversation = conversations.find((conv) => {
+            const existingConversation = conversations.documents.find((conv) => {
                 const a = [...conv.participantIds].sort();
                 const b = [...allUserIds].sort();
                 return a.length === b.length && a.every((id, i) => id === b[i]);
