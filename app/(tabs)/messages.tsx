@@ -41,11 +41,15 @@ export default function Messages() {
             );
             const allUserIds = [...new Set([user?.$id!, ...targetUserIds])];
             // Check if a conversation already exists between the users
-            const existingConversation = conversations.documents.find((conv) => {
-                const a = [...conv.participantIds].sort();
-                const b = [...allUserIds].sort();
-                return a.length === b.length && a.every((id, i) => id === b[i]);
-            });
+            const existingConversation = conversations.documents.find(
+                (conv) => {
+                    const a = [...conv.participantIds].sort();
+                    const b = [...allUserIds].sort();
+                    return (
+                        a.length === b.length && a.every((id, i) => id === b[i])
+                    );
+                },
+            );
             if (existingConversation) {
                 return existingConversation.$id; // Return existing conversation ID
             }
