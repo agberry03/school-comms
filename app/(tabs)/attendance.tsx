@@ -1,25 +1,41 @@
+import { databases } from '@/lib/appwrite';
 import { useAuth } from '@/lib/auth-context.tsx';
 import { fetchUsers } from '@/lib/fetchUsers.ts';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppStyles from '../Styles/AppStyles';
 
-// In final version, students will be immediately redirected to their own attendance page, while teachers will see a list of students to select from. This is just a placeholder for now.
+// Non-teacher users will be redirected to their own attendance page
+async function redirectBasedOnRole(user: any) {
+    const currentUser = await databases.getDocument(
+        process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.EXPO_PUBLIC_APPWRITE_USERS_COLLECTION_ID!,
+        user.$id,
+    );
+    if (currentUser.isTeacher === false) {
+        // If the user is a student, redirect to their own attendance page
+        router.push(`/Attendance/${user.$id}`);
+        return;
+    }
+}
+// If the user is a teacher, stay on the main attendance page to see the list of students
 
 export default function Attendance() {
     const { user } = useAuth();
     const [otherUsers, setOtherUsers] = useState<any[]>([]);
+    const studentUsers = otherUsers.filter((u) => u.isTeacher === false); // Only show students
 
     useEffect(() => {
         if (!user?.$id) return;
+        redirectBasedOnRole(user);
         const loadUsers = async () => {
             const fetchedUsers = await fetchUsers(user?.$id!);
             setOtherUsers(fetchedUsers || []);
         };
         loadUsers();
-    }, [user?.$id]);
+    }, [user, user?.$id]);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -56,13 +72,9 @@ export default function Attendance() {
                         alignItems: 'center',
                     }}
                 >
-                    {otherUsers.length > 0 ? (
-                        otherUsers.map((u) => (
-                            <Link
-                                key={u.$id}
-                                href={`/Attendance/${u.$id}`}
-                                asChild
-                            >
+                    {studentUsers.length > 0 ? (
+                        studentUsers.map((u) => (
+                            <Link key={u.$id} href={`/Attendance/${u.$id}`} asChild>
                                 <Text style={{ color: 'blue', margin: 10 }}>
                                     {u.email}
                                 </Text>

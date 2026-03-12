@@ -44,7 +44,7 @@ export default function StudentAttendance() {
                     { textAlign: 'center', marginVertical: 20 },
                 ]}
             >
-                Student Grades
+                Attendance
             </Text>
             <Text
                 style={[
