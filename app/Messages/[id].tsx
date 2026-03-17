@@ -85,6 +85,7 @@ export default function MessageDetails() {
     });
 
     return (
+        // To Do: Add name labels to textboxes not sent by the current user
         <SafeAreaView style={{ flex: 1 }}>
             <KeyboardAvoidingView
                 behavior="padding"

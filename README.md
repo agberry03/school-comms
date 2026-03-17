@@ -6,7 +6,6 @@ Mobile application for communication between teachers and students/parents. In a
 
 ## To-Do
 
-- Messaging groups of 3+ participants
 - Fully implement grade system
 - Fully implement attendance system
 - Separate user accounts for student/parent and teacher accounts
