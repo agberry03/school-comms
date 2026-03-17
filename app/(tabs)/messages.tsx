@@ -18,6 +18,7 @@ export default function Messages() {
     const { user } = useAuth();
     const [otherUsers, setOtherUsers] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
 
     const filteredUsers = otherUsers?.filter((item) =>
         item.email.toLowerCase().startsWith(searchTerm.toLowerCase()),
@@ -76,6 +77,14 @@ export default function Messages() {
         router.push(`/Messages/${convoId}`);
     };
 
+    const toggleUserSelection = (userId: string) => {
+        setSelectedUserIds((prev) =>
+            prev.includes(userId)
+                ? prev.filter((id) => id !== userId)
+                : [...prev, userId],
+        );
+    };
+
     return (
         // To implement: Chat groups
         <SafeAreaView style={{ flex: 1 }}>
@@ -99,6 +108,11 @@ export default function Messages() {
                 }}
                 placeholder="Search..."
             />
+            {selectedUserIds.length > 0 && (
+                <TouchableOpacity onPress={() => handlePress(selectedUserIds)}>
+                    <Text style={AppStyles.textButton}>Go to conversation</Text>
+                </TouchableOpacity>
+            )}
             <ScrollView>
                 <View
                     style={{
@@ -111,9 +125,16 @@ export default function Messages() {
                         filteredUsers.map((u) => (
                             <TouchableOpacity
                                 key={u.$id}
-                                onPress={() => handlePress([u.$id!])}
+                                onPress={() => toggleUserSelection(u.$id!)}
                             >
-                                <Text style={AppStyles.textButton}>
+                                <Text
+                                    style={[
+                                        AppStyles.textButton,
+                                        selectedUserIds.includes(u.$id)
+                                            ? { fontWeight: 'bold' }
+                                            : {},
+                                    ]}
+                                >
                                     {u.email}
                                 </Text>
                             </TouchableOpacity>
