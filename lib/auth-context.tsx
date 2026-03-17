@@ -34,15 +34,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         getUser();
     }, []);
 
-    const createUserDocument = async (userId: string, email: string) => {
+    const createUserDocument = async (
+        userId: string,
+        email: string,
+        isTeacher: boolean,
+    ) => {
         try {
             await databases.createDocument(
                 process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
                 process.env.EXPO_PUBLIC_APPWRITE_USERS_COLLECTION_ID!,
                 userId,
                 {
-                    userId,
                     email,
+                    isTeacher,
                 },
                 undefined, // permissions can be set here if needed
             );
@@ -55,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const newUser = await account.create(ID.unique(), email, password);
             await signIn(email, password);
-            await createUserDocument(newUser.$id, email);
+            await createUserDocument(newUser.$id, email, false); // Make variable isTeacher
             return null;
         } catch (error) {
             if (error instanceof Error) {

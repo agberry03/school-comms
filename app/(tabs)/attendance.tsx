@@ -8,6 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AppStyles from '../Styles/AppStyles';
 
 // Non-teacher users will be redirected to their own attendance page
+// Fix: Redirect only works on first load, and would lock student out of selecting other tabs until they go back
+// Students shouldn't be able to "go back" but should be able to see the other tab groups
 async function redirectBasedOnRole(user: any) {
     const currentUser = await databases.getDocument(
         process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!,
@@ -74,7 +76,11 @@ export default function Attendance() {
                 >
                     {studentUsers.length > 0 ? (
                         studentUsers.map((u) => (
-                            <Link key={u.$id} href={`/Attendance/${u.$id}`} asChild>
+                            <Link
+                                key={u.$id}
+                                href={`/Attendance/${u.$id}`}
+                                asChild
+                            >
                                 <Text style={{ color: 'blue', margin: 10 }}>
                                     {u.email}
                                 </Text>
