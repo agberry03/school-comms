@@ -21,6 +21,7 @@ export default StyleSheet.create<{
     textButton: TextStyle;
     messageBox: TextStyle;
     errorText: TextStyle;
+    labelText: TextStyle;
 }>({
     container: {
         flex: 1,
@@ -54,4 +55,8 @@ export default StyleSheet.create<{
         color: COLORS.special2,
         fontSize: 14,
     },
+    labelText: {
+        color: COLORS.primary,
+        fontSize: 12
+    }
 });

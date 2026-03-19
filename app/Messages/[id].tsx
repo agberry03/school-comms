@@ -2,7 +2,7 @@ import { client, databases, ID } from '@/lib/appwrite';
 import { useAuth } from '@/lib/auth-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, Text, View } from 'react-native';
 import { Query } from 'react-native-appwrite';
 import { IconButton, TextInput } from 'react-native-paper';
@@ -13,10 +13,10 @@ export default function MessageDetails() {
     // The route param is the conversation ID, but we can use it to find the target user ID(s) by looking at the conversation's participants and excluding the current user ID
     const { id: convoId } = useLocalSearchParams<{ id: string }>();
     const { user } = useAuth();
-    const [messages, setMessages] = React.useState<any[]>([]);
-    const [messageContent, setMessageContent] = React.useState<string>('');
-    const [isInputFocused, setIsInputFocused] = React.useState<boolean>(false);
-    const scrollViewRef = React.useRef<ScrollView>(null);
+    const [messages, setMessages] = useState<any[]>([]);
+    const [messageContent, setMessageContent] = useState<string>('');
+    const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+    const scrollViewRef = useRef<ScrollView>(null);
 
     const sendMessage = async (content: string) => {
         try {
@@ -31,6 +31,7 @@ export default function MessageDetails() {
                     content: content,
                     conversations: convoId,
                     conversationId: convoId,
+                    email: user?.email
                 },
                 undefined, // permissions can be set here if needed
             );
@@ -85,7 +86,6 @@ export default function MessageDetails() {
     });
 
     return (
-        // To Do: Add name labels to textboxes not sent by the current user
         <SafeAreaView style={{ flex: 1 }}>
             <KeyboardAvoidingView
                 behavior="padding"
@@ -100,24 +100,44 @@ export default function MessageDetails() {
                 >
                     {messages.length > 0 ? (
                         messages.map((msg, index) => (
-                            <Text
-                                key={index}
-                                style={[
-                                    AppStyles.messageBox,
-                                    {
-                                        margin: 10,
-                                        alignSelf:
-                                            msg.senderId === user?.$id
-                                                ? 'flex-end'
-                                                : 'flex-start',
-                                    },
-                                ]}
-                            >
-                                {msg.content}
-                            </Text>
+                            <View key={index}>
+                                <Text
+                                    style={[
+                                        AppStyles.messageBox,
+                                        {
+                                            marginLeft: 10,
+                                            marginRight: 10,
+                                            alignSelf:
+                                                msg.senderId === user?.$id
+                                                    ? 'flex-end'
+                                                    : 'flex-start',
+                                        },
+                                    ]}
+                                >
+                                    {msg.content}
+                                </Text>
+                                {msg.senderId !== user?.$id && (
+                                    <Text
+                                        style={[
+                                            AppStyles.labelText,
+                                            {
+                                                marginLeft: 16,
+                                                marginBottom: 10,
+                                            },
+                                        ]}
+                                    >
+                                        {msg.email}
+                                    </Text>
+                                )}
+                            </View>
                         ))
                     ) : (
-                        <Text style={[AppStyles.text, { padding: 10, textAlign: 'center' }]}>
+                        <Text
+                            style={[
+                                AppStyles.text,
+                                { padding: 10, textAlign: 'center' },
+                            ]}
+                        >
                             No messages.
                         </Text>
                     )}
