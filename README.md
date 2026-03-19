@@ -4,6 +4,9 @@
 
 Mobile application for communication between teachers and students/parents. In addition to providing a separate communication platform, individual letter grades and attendance records will be able to be viewed.
 
+## Database
+    [Appwrite](https://cloud.appwrite.io/console/project-sfo-69853068001ca1b330bc/)
+
 ## To-Do
 
 - Add notifications
@@ -14,4 +17,4 @@ Mobile application for communication between teachers and students/parents. In a
 
 ## Demos
 
-[Synchronous Messaging](https://www.youtube.com/watch?v=3ZgYy-_AOQk)
+    [Synchronous Messaging](https://www.youtube.com/watch?v=3ZgYy-_AOQk)
