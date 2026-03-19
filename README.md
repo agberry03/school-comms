@@ -6,12 +6,12 @@ Mobile application for communication between teachers and students/parents. In a
 
 ## To-Do
 
+- Add notifications
+- More robust login system
 - Fully implement grade system
 - Fully implement attendance system
-- Separate user accounts for student/parent and teacher accounts
-- More robust login system
 - Fully implement homescreen
 
 ## Demos
 
-I'll put links to screenshots/videos of the application in action here.
+[Synchronous Messaging](https://www.youtube.com/watch?v=3ZgYy-_AOQk)
